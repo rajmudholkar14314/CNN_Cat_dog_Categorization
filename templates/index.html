@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CAT DOG CLASSIFICATION</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            width: 400px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+        h2 {
+            text-align: center;
+        }
+        input[type="file"] {
+            padding: 10px;
+            width: 100%;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #eee;
+            padding: 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Upload Cat or Dog Image</h2>
+
+    <input type="file" id="image" accept="image/*">
+
+    <button onclick="uploadImage()">Upload & Identify</button>
+
+    <h3>Response:</h3>
+    <pre id="responseBox">No response yet.</pre>
+</div>
+
+<script>
+    function uploadImage() {
+        let fileInput = document.getElementById("image");
+        if (fileInput.files.length === 0) {
+            alert("Please select an image file.");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("image_file", fileInput.files[0]);
+
+        // IMPORTANT: relative URL, same origin as Flask
+        fetch("/uploadImage", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("responseBox").innerHTML = "Predicted Category : " + data;
+        })
+        .catch(error => {
+            document.getElementById("responseBox").innerHTML = "Error: " + error;
+        });
+    }
+
+</script>
+
+</body>
+</html>
